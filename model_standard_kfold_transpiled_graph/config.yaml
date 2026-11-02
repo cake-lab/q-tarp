@@ -1,0 +1,57 @@
+dataset:
+  split_ratio: [0.8, 0.2]
+  metadata_csv: ""
+  categorical_balance_features: ["device", "workload_family"]
+  numeric_balance_features:
+    [
+      "time_taken",
+      "source_num_qubits",
+      "transpiled_depth",
+      "transpiled_total_ops",
+      "transpiled_two_qubit_ops",
+    ]
+
+cv:
+  num_candidate_splits: 1000
+  split_seed_start: 0
+  num_folds: 5
+  selection_metric: mse
+
+model:
+  name: simple
+  use_graph_features: True
+  use_global_features: True
+  use_gate_type: True
+  use_qubit_index: True
+  use_T1T2: True
+  use_gate_error: True
+  use_gate_index: True
+  num_layers: 3
+  dropout: 0.0
+
+num_epochs: 400
+batch_size: 16
+
+criterion:
+  name: mse
+
+optimizer:
+  name: adam
+  lr: 5.0e-4
+  weight_decay: 1.0e-4
+
+scheduler:
+  name: constant
+
+search_space:
+  batch_size: [8, 16]
+  num_epochs: [400]
+  model:
+    num_layers: [3]
+  optimizer:
+    lr: [1.0e-4, 5.0e-4]
+    weight_decay: [0.0,1.0e-4]
+
+pdb: False
+
+device: gpu

@@ -1,0 +1,84 @@
+dataset:
+  split_ratio: [0.8, 0.2]
+  metadata_csv: ""
+  categorical_balance_features: ["device", "workload_family"]
+  numeric_balance_features:
+    [
+      "time_taken",
+      "source_num_qubits",
+      "source_depth",
+      "source_total_ops",
+      "source_two_qubit_ops",
+    ]
+  max_nodes:
+  max_samples:
+
+cv:
+  num_candidate_splits: 1000
+  split_seed_start: 0
+  num_folds: 5
+  selection_metric: mse
+
+preprocessing:
+  drop_zero_sum_global_features: True
+  scale_models: ["linear_regression", "ridge", "svr", "xgboost", "mlp"]
+
+runtime:
+  skip_unavailable_models: True
+
+models:
+  enabled:
+    [
+      "linear_regression",
+      "ridge",
+      "random_forest",
+      "svr",
+      "mlp",
+      "xgboost",
+    ]
+
+  linear_regression:
+    search_space:
+      fit_intercept: [True]
+
+  ridge:
+    search_space:
+      alpha: [0.01, 0.1, 1.0, 10.0]
+      fit_intercept: [True]
+
+  random_forest:
+    n_jobs: 8
+    search_space:
+      n_estimators: [200]
+      max_depth: [null, 12, 24]
+      min_samples_leaf: [1, 4]
+
+  svr:
+    search_space:
+      kernel: ["rbf"]
+      C: [1.0, 10.0, 100.0]
+      epsilon: [0.1, 1.0]
+      gamma: ["scale"]
+
+  mlp:
+    search_space:
+      hidden_layer_sizes: ["128", "128,64"]
+      activation: ["relu"]
+      alpha: [1.0e-4, 1.0e-3]
+      learning_rate_init: [1.0e-3]
+      max_iter: [300]
+
+  xgboost:
+    n_jobs: 8
+    search_space:
+      n_estimators: [200]
+      max_depth: [4, 6]
+      learning_rate: [0.05, 0.1]
+      subsample: [0.8, 1.0]
+      colsample_bytree: [0.8, 1.0]
+      reg_lambda: [1.0]
+
+output:
+  save_test_predictions_csv: True
+
+device: cpu
